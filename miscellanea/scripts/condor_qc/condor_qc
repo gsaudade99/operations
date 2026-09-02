@@ -6,7 +6,7 @@ from time import localtime, strftime
 import argparse
 
 
-cq_cmd = ["condor_q", "-af:Vj", "JobStatus", "CMD", "Qdate", "JobStartDate", "JobLastStartDate", "JobCurrentStartDate", "RemoteHost"]
+cq_cmd = ["condor_q", "-af:Vj", "JobStatus", "CMD", "Qdate", "JobStartDate", "JobLastStartDate", "JobCurrentStartDate", "RemoteHost", "JobDescription"]
 
 cq_fmt1 = "{0:10} {1:5} {2:20} {3}"
 
@@ -51,6 +51,12 @@ def process_input_line(line, stats, args):
                                  tse2timestr(line[3 + args.timeval]),
                                  rewrite_undef(line[7].decode('utf-8').strip('"')),
                                  line[2].decode('utf-8').strip('"')))
+        elif args.jdesc:
+            print(cq_fmt2.format(line[0].decode('utf-8'),
+                                 stc2str[int(line[1])],
+                                 tse2timestr(line[3 + args.timeval]),
+                                 rewrite_undef(line[8].decode('utf-8').strip('"')),
+                                 line[2].decode('utf-8').strip('"')))
         else:
             print(cq_fmt1.format(line[0].decode('utf-8'),
                                  stc2str[int(line[1])],
@@ -62,6 +68,7 @@ def parse_cmdline():
     ap = argparse.ArgumentParser(description="condor_qc: Output re-formatting wrapper for condor_q(1)")
     ap.add_argument("-s", "--stats", action="store_true", help="Print statistics")
     ap.add_argument("-e", "--exechost", action="store_true", help="Show execution host")
+    ap.add_argument("-d", "--jdesc", action="store_true", help="Show job description")
     ap.add_argument("-I", "--idle", action="store_true", help="Filter idle jobs")
     ap.add_argument("-R", "--run", action="store_true", help="Filter running jobs")
     ap.add_argument("-H", "--hold", action="store_true", help="Filter held jobs")
@@ -97,12 +104,14 @@ def main():
     stats = dict(total=0, compl=0, deleted=0, idle=0, run=0, hold=0)
     if args.exechost:
         headers = ["JobID", "ST"] + [timeval_hdg[args.timeval]] + ["Exec Host"] + ["CMD"]
+    elif args.jdesc:
+        headers = ["JobID", "ST"] + [timeval_hdg[args.timeval]] + ["Job Description"] + ["CMD"]
     else:
         headers = ["JobID", "ST"] + [timeval_hdg[args.timeval]] + ["CMD"]
     if args.constraint:
         cq_cmd += ["-constraint", args.constraint[0]]
     try:
-        if args.exechost:
+        if args.exechost or args.jdesc:
             print(cq_fmt2.format(*headers))
         else:
             print(cq_fmt1.format(*headers))
