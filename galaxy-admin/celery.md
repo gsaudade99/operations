@@ -12,7 +12,7 @@ Celery is well [documented](https://docs.celeryq.dev/en/stable/index.html) and w
 
 See also this [presentation](https://training.galaxyproject.org/training-material/topics/admin/tutorials/celery/slides.html) in the training material. (It should be updated soon)
 
-![a diagram that shows the relation between Galaxy, RabbitMQ and Celery. Galaxy sends tasks (messages) to RabbitMQ and Celery fetches them there](celery.png)
+![a diagram that shows the relation between Galaxy, RabbitMQ and Celery. Galaxy sends tasks (messages) to RabbitMQ and Celery fetches them there](../images/celery.png)
 
 ## How to use it
 
@@ -86,4 +86,4 @@ All you have to do is specify
 
 in your `/etc/telegraf/telegraf.conf`.
 when you set up your Telegraf/InfluxDB/Grafana Stack correctly, you should be able to create Celery panels like this (or better):
-![A Grafana panel showing the number of currenly executed tasks, grouped by workers](grafana-celery.png)
+![A Grafana panel showing the number of currenly executed tasks, grouped by workers](../images/grafana-celery.png)

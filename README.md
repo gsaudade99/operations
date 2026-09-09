@@ -2,23 +2,23 @@
 
 # Operations Manual for usegalaxy.eu
 
-- [Custom Subdomain](./subdomains.md)
-- [Interactive Tools](./interactive_tools.md)
+- [Custom Subdomain](./galaxy-admin/subdomains.md)
+- [Interactive Tools](./galaxy-admin/interactive_tools.md)
 - [Update a Tool](https://github.com/usegalaxy-eu/usegalaxy-eu-tools)
 - [Galaxy Europe Services](./cloud/services.md)
-- [Bare metal nodes](./bare_metal.md)
-- [Traefik](./traefik.md)
-- [Configuring multi-GPU HTCondor nodes](./multi-gpu-single-node-htcondor.md)
+- [Bare metal nodes](./infrastructure/bare_metal.md)
+- [Traefik](./galaxy-admin/traefik.md)
+- [Configuring multi-GPU HTCondor nodes](./htcondor/multi-gpu-single-node-htcondor.md)
 
 Galaxy Admin:
 
-- [Upgrade Procedures](./upgrade.md)
-- [Rebasing when upstream gets backports](./rebasing.md)
-- [Process Management](./procmgmt.md)
-- [TIaaS Requests](./tiaas.md)
-- [Jobs](./jobs.md)
-- [Monitoring](./monitoring.md)
-- [Mixed Notes](./notes.md)
+- [Upgrade Procedures](./galaxy-admin/upgrade.md)
+- [Rebasing when upstream gets backports](./galaxy-admin/rebasing.md)
+- [Process Management](./galaxy-admin/procmgmt.md)
+- [TIaaS Requests](./galaxy-admin/tiaas.md)
+- [Jobs](./galaxy-admin/jobs.md)
+- [Monitoring](./galaxy-admin/monitoring.md)
+- [Mixed Notes](./galaxy-admin/notes.md)
 - [ClickHouse and Plausible Analytics](./plausible.md)
 
 Cloud Admin:
@@ -27,8 +27,8 @@ Cloud Admin:
 - [Accessing bwCloud with Terraform](./cloud/access-bwCloud.md)
 - [Launching a student VM](./cloud/student-vm.md)
 - [Services in the bwCloud](./cloud/services.md)
-- [Celery](./celery.md)
-- [KVM Server for Critical Infrastructure](./kvm-server.md)
+- [Celery](./galaxy-admin/celery.md)
+- [KVM Server for Critical Infrastructure](./infrastructure/kvm-server.md)
 
 
 This and That:

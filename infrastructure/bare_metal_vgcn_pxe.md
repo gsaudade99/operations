@@ -185,7 +185,7 @@ c192m1536-n3702.bi.privat
 
 ## Infrastructure Components
 
-<img src="./images/pxe-infrastructure.png" />
+<img src="../images/pxe-infrastructure.png" />
 
 ### dnbd3-primary.galaxyproject.eu
 
@@ -339,7 +339,7 @@ ls /netboot/boot          # verify boot files are visible before declaring the s
 
 This drop-in is managed via Ansible in the `dnbd3primary` host group of the
 [infrastructure-playbook](https://github.com/usegalaxy-eu/infrastructure-playbook).
-See also [power-outage-recovery.md §A](./power-outage-recovery.md#a--tftp--autofs-startup-ordering).
+See also [power-outage-recovery.md §A](../power-outage-recovery.md#a--tftp--autofs-startup-ordering).
 
 ## Debugging
 

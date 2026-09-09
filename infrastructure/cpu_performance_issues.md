@@ -62,7 +62,7 @@ cpupower monitor
 
 Testing the CPUs with `stress-ng` can lead to very counterintuitive results:
 <video width=720 controls>
-  <source src="images/stress-ng.mp4" type="video/mp4">
+  <source src="../images/stress-ng.mp4" type="video/mp4">
 </video>
 
 # 🪛 Settings

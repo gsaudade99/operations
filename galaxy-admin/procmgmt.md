@@ -89,7 +89,7 @@ This should be an extremely rare phenomenon. This should only occur if:
 
 Then it might be OK to scale up.
 
-![](./scale-up.png)
+![](../images/scale-up.png)
 
 Scaling down should be done when it returns to normal.
 
