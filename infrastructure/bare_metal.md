@@ -6,16 +6,26 @@ title: Bare metal nodes
 
 We are using a few bare metal nodes for some critical services.
 
-They have  f.q.d.n. assigned by us and are collected [here](https://github.com/usegalaxy-eu/infrastructure/blob/4e22b02395c1bb8872ebda711cc123968ae8589f/dns.tf#L102)
+They have  f.q.d.n. assigned by us and are collected [here](https://github.com/usegalaxy-eu/infrastructure/blob/master/dns.tf)
 
-`sn06.galaxyproject.eu` is the Galaxy machine
+`sn09.galaxyproject.eu` is the Galaxy machine (head node)
 
-`sn05.galaxyproject.eu` is the PostgreSQL and HTCcondor central manager machine
+`sn10.galaxyproject.eu` hosts the UCSC Genome Browser VM (libvirt/Vagrant)
 
-`build.galaxyproject.eu` is the Jenkins master machine
+`sn11.galaxyproject.eu` is the Galaxy PostgreSQL database server
 
-`zfs1.galaxyproject.eu` is a ZFS server
+`sn12.galaxyproject.eu` is the Jenkins master machine, a KVM/libvirt host, and the DNBD3 proxy
 
-`ssds1.galaxyproject.eu` is  an all-flash ZFS server
+`zfs0f.galaxyproject.eu` is an all-flash ZFS server (formerly `ssds1.galaxyproject.eu`)
 
-`manager.vgcn.galaxyproject.eu` was the previous HTCondor central manager and is waiting to be reallocated
+`zfs1.galaxyproject.eu` is a ZFS server (spinning disks with flash cache)
+
+`zfs2f.galaxyproject.eu` is an all-flash ZFS server
+
+`zfs3f.galaxyproject.eu` is an all-flash ZFS server
+
+`dnbd3-primary.galaxyproject.eu` is the primary server of the DNBD3 network boot infrastructure for the bare metal VGCN nodes
+
+The HTCondor central manager runs as a VM (`central-manager.bi.privat`)
+
+`manager.vgcn.galaxyproject.eu` was the previous HTCondor central manager; its DNS record has been removed

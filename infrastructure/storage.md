@@ -5,9 +5,17 @@ title: UseGalaxy.EU storage
 
 Our storage mounts are controlled everywhere with autofs.
 
-In VGCN machines it's defined in the [userdata.yml](https://github.com/usegalaxy-eu/vgcn-infrastructure/blob/master/userdata.yaml)
-file while in other machines it is controlled by [usegalaxy-eu.autofs](https://github.com/usegalaxy-eu/ansible-autofs) ansible role and
-some variables like in [group_vars/sno6.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/4e6121da8af500dfe878c312243be49807ac5f48/group_vars/sn06.yml#L18)
+The single source of truth for all mount points is the [mounts repository](https://github.com/usegalaxy-eu/mounts).
+Mount points are defined in [mountpoints.yml](https://github.com/usegalaxy-eu/mounts/blob/master/mountpoints.yml) and
+templated into `autofs_conf_files` ([templates/group-vars-all.yml.j2](https://github.com/usegalaxy-eu/mounts/blob/master/templates/group-vars-all.yml.j2),
+rendered to [dest/all.yml](https://github.com/usegalaxy-eu/mounts/blob/master/dest/all.yml)), which is included by the
+[infrastructure-playbook](https://github.com/usegalaxy-eu/infrastructure-playbook) as `mounts/dest/all.yml`.
+Each host selects the sections it needs via the `autofs_mount_points` variable in its group_vars,
+e.g. [group_vars/sn09/sn09.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/group_vars/sn09/sn09.yml).
+
+In VGCN machines the autofs configuration is templated directly from the mounts repository, which is included as a
+git submodule in [vgcn-infrastructure](https://github.com/usegalaxy-eu/vgcn-infrastructure) (see
+[userdata.yaml.j2](https://github.com/usegalaxy-eu/vgcn-infrastructure/blob/main/userdata.yaml.j2)).
 
 ## How it works
 
@@ -17,42 +25,58 @@ some variables like in [group_vars/sno6.yml](https://github.com/usegalaxy-eu/inf
 /data           /etc/auto.data          nfsvers=3
 ```
 
-Note that the above autofs conf is VERY sensitive to spaces. Do not retab unless you need to. `/etc/auto.data` looks like:
+Note that the above autofs conf is VERY sensitive to spaces. Do not retab unless you need to. `/etc/auto.data` looks like
+(the sections rendered from the mounts repository, `data` and `jwd` shown here):
 
 ```
 #name   options                         source
 #
-0       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-1       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-2       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-3       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-4       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-5       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-6       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-7       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-dp01    -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dataplant01
-dnb01   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-dnb02   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-dnb03   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-dnb04   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-dnb05   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
-dnb06   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb06
-dnb07   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb07
-dnb08   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb08
-db      -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-gxtst   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/test
-gxkey   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main
-jwd     -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/&
+db      -rw,hard,nosuid,nconnect=2,vers=3       ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+dp01    -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dataplant01
+1       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+3       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+4       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+5       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+6       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+7       -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+dnb-ds01 -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb01-legacy
+dnb-ds02 -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb02-legacy
+dnb-ds03 -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb03-legacy
+dnb01   -rw,hard,nosuid,nconnect=2,nodev,vers=3 ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+dnb02   -rw,hard,nosuid,nconnect=2,nodev,vers=3 ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+dnb04   -rw,hard,nosuid,nconnect=2,nodev,vers=3 ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+dnb05   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
+dnb06   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb06
+dnb07   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb07
+dnb08   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb08
+dnb09   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb09
+dnb10   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb10
+dnb11   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb11
+dnb12   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb12
+dnb13   -rw,hard,nosuid,nconnect=2,nodev,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/dnb13
+jwd     -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/ws01/&
+jwd01   -rw,hard,nosuid,vers=3                  noads1.svm.bwsfs.uni-freiburg.de:/galaxy-mwd01/
+jwd03f  -rw,hard,nosuid,nconnect=2,vers=3       denbi.svm.bwsfs.uni-freiburg.de:/ws02/&
+jwd06   -rw,hard,nosuid                         zfs06.bi.privat:/export/&
+jwd07   -rw,hard,nosuid                         zfs07.bi.privat:/export/&
+jwd08   -rw,hard,nosuid                         zfs08.bi.privat:/export/&
+birna01 -rw,hard,nosuid,nodev,nconnect=2,vers=3 denbi.svm.bwsfs.uni-freiburg.de:/&
 ```
 
 So dnb01 will be available under /data/dnb01
+
+Additional sections (`gxtest`, `gxkey`, `usrlocal`, `cache`, `cvac`, `misc`) are templated similarly into
+`/etc/auto.usrlocal`, etc. See [templates/group-vars-all.yml.j2](https://github.com/usegalaxy-eu/mounts/blob/master/templates/group-vars-all.yml.j2)
+for the exact mapping.
 
 # Different kinds of storage
 
 * managed iSilon storage (NFS)
 * managed NetApp storage (NFS, S3 possible)
 * zfs1: Big machine (>200TB) with spinning disks and SSD cache frontend (self-build)
-* ssds1: SSD-only machine (24x1.8TB) (self-build)
+* zfs0f (formerly ssds1): SSD-only machine (24x1.8TB) (self-build)
+* zfs2f, zfs3f: additional all-flash ZFS servers (self-build)
+* zfs06, zfs07, zfs08: ZFS servers exported via NFSv4 (`zfs0X.bi.privat`), used for the `jwd06`-`jwd08`, `cache06`-`cache08`, `misc06`-`misc08` and `cvac08` mounts
 
 # Group-based storage
 
@@ -65,25 +89,40 @@ to one group or different weights at the moment.
 
 # Sync
 
-We have `/usr/bin/galaxy-sync-to-nfs`, created by this [Ansible role](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/roles/usegalaxy-eu.rsync-to-nfs/tasks/main.yml), on sn04 that takes care of synchronizing Galaxy data from sn04 to the storage into the computational cluster.
+We have `/usr/bin/galaxy-sync-to-nfs`, created by this [Ansible role](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/roles/usegalaxy-eu.rsync-to-nfs/tasks/main.yml), on sn09 that takes care of synchronizing Galaxy data from the head node to the storage into the computational cluster.
 
 Currently, the script is invoked:
 
-* by the [handler](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/4e6121da8af500dfe878c312243be49807ac5f48/sn06.yml#L57) in the Galaxy playbook.
+* by the [handler](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/sn09.yml) in the Galaxy playbook.
 * by Jenkins, as a downstream project at the end of tools installation. See [install_tools](https://build.galaxyproject.eu/job/usegalaxy-eu/job/install-tools/)
 
-# Cluster and Mounts (WIP)
+# Cluster and Mounts
 
 Adding new storage/mount points to galaxy is not trivial, since there are many machines involved.
 
-After adding a DNS-A-Record to the [infrastructure/dns.tf](https://github.com/mira-miracoli/infrastructure/blob/main/dns.tf),
+Mount points are centrally maintained in the [mounts repository](https://github.com/usegalaxy-eu/mounts). After adding a DNS-A-Record to the [infrastructure/dns.tf](https://github.com/usegalaxy-eu/infrastructure/blob/master/dns.tf):
 
-it is sufficient for most machines to add the mount point to [infrastucture-playbook/group_vats/all.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/group_vars/all.yml) in the `autofs_conf_files` section.
+1. Add the new mount point to [mountpoints.yml](https://github.com/usegalaxy-eu/mounts/blob/master/mountpoints.yml) in the appropriate section
+2. The `all.yml` playbook in the mounts repository templates it into `dest/all.yml` (the `autofs_conf_files` variable), which is consumed by the infrastructure-playbook as `mounts/dest/all.yml`
+3. If it is a new section, add that section to the `autofs_mount_points` variable of the hosts that should mount it (in their group_vars)
 
 **HOWEVER** for
 
-* **VGCN**, you have to add the mountpoint to [vgcn-infrastructure/userdata.yaml](https://github.com/usegalaxy-eu/vgcn-infrastructure/blob/main/userdata.yaml)
-* **incoming (FTP)**, add it to its own [group_vars/incoming.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/group_vars/incoming.yml)
+* **VGCN**, the mounts repository is included as a git [submodule](https://github.com/usegalaxy-eu/vgcn-infrastructure) and the mount points are templated directly into `/etc/auto.data` via [userdata.yaml.j2](https://github.com/usegalaxy-eu/vgcn-infrastructure/blob/main/userdata.yaml.j2)
+* **incoming (FTP)**, add the section to its `autofs_mount_points` in [group_vars/incoming.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/group_vars/incoming.yml)
+
+# Which host mounts what
+
+The `autofs_mount_points` selection per host group (from the infrastructure-playbook group_vars):
+
+| Host group    | Sections mounted                                                              |
+| :------------ | :---------------------------------------------------------------------------- |
+| sn09          | `data`, `gxtest`, `gxkey`, `jwd`, `usrlocal`, `cache`, `misc`                  |
+| sn11          | `data`, `gxtest`, `gxkey`, `jwd`                                               |
+| maintenance   | `data`, `gxtest`, `gxkey`, `jwd`, `usrlocal`, `cache`, `misc` (+ `gxkey` at `/opt/galaxy`) |
+| incoming (FTP)| `data`, `jwd`, `misc`                                                          |
+| celery cluster| `gxkey` at `/opt/galaxy` (`usrlocal_celerycluster`)                            |
+| VGCN          | `dnb`, `jwd`, `cache`, `misc` (`/etc/auto.data`) and `tools` + `gxkey` (`/etc/auto.usrlocal`), templated from the mounts submodule |
 
 # Steps to add a new data (_dnbXX_) share
 1. Request the storage team (RZ) for a new data share (_dnbXX_)
@@ -99,7 +138,7 @@ it is sufficient for most machines to add the mount point to [infrastucture-play
       pssh -h /etc/pssh/cloud -l centos -i 'ls -l /data/dnb09/'
       ```
    4. Then, update the `object_store_conf.xml`, for example like [see here](https://github.com/usegalaxy-eu/infrastructure-playbook/pull/800)
-   5. Once everything is merged, run the Jenkins job (`sn06` playbook project) to deploy the new data share
+   5. Once everything is merged, run the Jenkins job (`sn09` playbook project) to deploy the new data share
    6. Monitor the changes and the handler logs to make sure that there are no errors.
 
 # NFS export policies
@@ -141,43 +180,56 @@ denbi   birna      2         nfs3     10.5.68.0/24     sys    sys    none
     * `superuser` means `no_root_squash` in this case. This means that the `root` account on the maschine with ip 132.230.223.239 and the machines within the subnet 10.5.68.0/24 can access (read and write) the volumes.
     * **Do not use shares (`jwd`, and `jwd03f`) exported via `ws01` and `ws02`. These shares will be removed soonish (as of: 14.06.2023)**
 
-The following table shall give an overview of the different mount points and where they are used:
+The following table is synced with the [mounts repository](https://github.com/usegalaxy-eu/mounts) ([mountpoints.yml](https://github.com/usegalaxy-eu/mounts/blob/master/mountpoints.yml)) and gives an overview of the different mount points:
 
-
-| Mountpoint       | Physicalmachine                                               | Export                                                                   | Purpose                             | sn05               | sn06               | sn07               | incoming           | celery             | VGCN               |
-| :----------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------- | -------------------- | :------------------- | -------------------- | -------------------- | -------------------- | -------------------- |
-| /data/jwd        | NetApp 400                                                    | denbi.svm.bwsfs.uni-freiburg.de:/ws01/&                                  | job working dir                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| /data/jwd01      | Spinning Disks with SSD cache (self-build)                    | zfs1.galaxyproject.eu:/export/&                                          | job working dir                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| /data/jwd02f     | Full SSD (self-build)                                         | zfs2f.galaxyproject.eu:/export/&                                         | job working dir (full-flash)        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/jwd03f     | NetApp A400 flash                                             | denbi.svm.bwsfs.uni-freiburg.de:/ws02/&                                  | job working dir (full-flash)        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/jwd04      | Full SSD (self-build)<br />(from here no f for flash in name) | zfs3f.galaxyproject.eu:/export/&                                         | job working dir (full-flash)        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/jwd05e      | Full SSD (self-build)<br />(from here no f for flash in name)<br />_**e**: encrypted_ | zfs3f.galaxyproject.eu:/export/&                                         | job working dir (full-flash)        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| /opt/galaxy      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main                   | galaxy root                         |                    |                    |                    |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /usr/local/tools | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/tools                             | tool dir                            |                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| /data/gxtst      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/test                   |                                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |                    |
-| /data/gxkey      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main                   |                                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |                    |
-| /data/galaxy-sync    | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/galaxy-sync/main                   | Galaxy root (galaxy's codebase)      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |
-| /data/db         | iSilon                                                        | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& |                                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/0          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/1          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/2          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/3          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/4          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/5          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/6          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/7          | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb01      | NetApp A400 /future iSilon                                    | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb02      | NetApp A400 /future iSilon                                    | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb03      | iSilon                                                        | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb04      | iSilon                                                        | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb05      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&                                 | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb06      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb06                                   | storage (old)                       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb07      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb07                                   | currently used                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb08      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb08                                   | currently used                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dnb09      | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dnb09                                   | unused                              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| /data/dp01       | NetApp A400                                                   | denbi.svm.bwsfs.uni-freiburg.de:/dataplant01                             | special storage for DataPLANT group | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
+| Mountpoint        | Section | Backend                                                      | Export                                                                   | NFS options                          | Purpose                             |
+| :---------------- | :------ | :----------------------------------------------------------- | :----------------------------------------------------------------------- | :----------------------------------- | :---------------------------------- |
+| /data/db          | dnb     | iSilon                                                       | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | hard,rw,nosuid,nconnect=2,vers=3     |                                     |
+| /data/dp01        | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dataplant01                             | hard,rw,nosuid,nconnect=2,vers=3     | special storage for DataPLANT group |
+| /data/1           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/3           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/4           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/5           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/6           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/7           | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&                           | hard,rw,nosuid,nconnect=2,vers=3     | storage (old)                       |
+| /data/dnb-ds01    | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01-legacy                            | hard,rw,nosuid,nconnect=2,nodev,vers=3 | legacy                             |
+| /data/dnb-ds02    | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb02-legacy                            | hard,rw,nosuid,nconnect=2,nodev,vers=3 | legacy                             |
+| /data/dnb-ds03    | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb03-legacy                            | hard,rw,nosuid,nconnect=2,nodev,vers=3 | legacy                             |
+| /data/dnb01       | dnb     | NetApp A400 /future iSilon                                   | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | hard,rw,nosuid,nconnect=2,nodev,vers=3 | storage (old)                      |
+| /data/dnb02       | dnb     | NetApp A400 /future iSilon                                   | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | hard,rw,nosuid,nconnect=2,nodev,vers=3 | storage (old)                      |
+| /data/dnb04       | dnb     | iSilon                                                       | ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/& | hard,rw,nosuid,nconnect=2,nodev,vers=3 | storage (old)                      |
+| /data/dnb05       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&                                 | hard,rw,nosuid,nconnect=2,nodev,vers=3 | storage (old)                      |
+| /data/dnb06       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb06                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 | storage (old)                      |
+| /data/dnb07       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb07                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 | currently used                     |
+| /data/dnb08       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb08                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 | currently used                     |
+| /data/dnb09       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb09                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 | unused                             |
+| /data/dnb10       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb10                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 |                                     |
+| /data/dnb11       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb11                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 |                                     |
+| /data/dnb12       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb12                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 |                                     |
+| /data/dnb13       | dnb     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb13                                   | hard,rw,nosuid,nconnect=2,nodev,vers=3 |                                     |
+| /data/jwd         | jwd     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/ws01/&                                  | hard,rw,nosuid,nconnect=2,vers=3     | job working dir                     |
+| /data/jwd01       | jwd     | NetApp (noads1)                                              | noads1.svm.bwsfs.uni-freiburg.de:/galaxy-mwd01/                          | hard,rw,nosuid,vers=3                | job working dir                     |
+| /data/jwd03f      | jwd     | NetApp A400 flash                                            | denbi.svm.bwsfs.uni-freiburg.de:/ws02/&                                  | hard,rw,nosuid,nconnect=2,vers=3     | job working dir (full-flash)        |
+| /data/jwd06       | jwd     | ZFS server (self-build)                                      | zfs06.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | job working dir                     |
+| /data/jwd07       | jwd     | ZFS server (self-build)                                      | zfs07.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | job working dir                     |
+| /data/jwd08       | jwd     | ZFS server (self-build)                                      | zfs08.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | job working dir                     |
+| /data/birna01     | jwd     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/&                                       | hard,rw,nosuid,nodev,nconnect=2,vers=3 | birna01 volume (read-only)         |
+| /opt/galaxy (test)| sync    | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/test                   | hard,rw,nosuid,nconnect=2,vers=3     | galaxy root (test)                  |
+| /opt/galaxy       | sync    | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main                   | hard,rw,nosuid,nconnect=2,vers=3     | galaxy root                         |
+| /opt/galaxy       | sync    | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/galaxy-sync                             | hard,rw,nosuid,nconnect=2,vers=3     | galaxy root (galaxy's codebase)     |
+| /tmp              | tmp     | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/ws01/jwd/tmp                            | hard,rw,nosuid,nconnect=2,vers=3     | tmp                                 |
+| /usr/local/tools  | tools   | NetApp A400                                                  | denbi.svm.bwsfs.uni-freiburg.de:/dnb01/tools                             | hard,rw,nosuid,nconnect=2,vers=3     | tool dir                            |
+| /data/cache06     | cache   | ZFS server (self-build)                                      | zfs06.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | cache                               |
+| /data/cache07     | cache   | ZFS server (self-build)                                      | zfs07.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | cache                               |
+| /data/cache08     | cache   | ZFS server (self-build)                                      | zfs08.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | cache                               |
+| /data/misc06      | misc    | ZFS server (self-build)                                      | zfs06.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | misc                                |
+| /data/misc07      | misc    | ZFS server (self-build)                                      | zfs07.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | misc                                |
+| /data/misc08      | misc    | ZFS server (self-build)                                      | zfs08.bi.privat:/export/&                                                | hard,rw,nosuid (NFSv4)               | misc                                |
+| /data/cvac08      | cvac    | ZFS server (self-build)                                      | zfs08.bi.privat:/export/cvac08                                           | hard,rw,nosuid (NFSv4)               | CVMFS alien cache (read-only)       |
 
 "old" means in this case, the storage is still used to read old datasets, but not to write new ones.
+
+The previously used `jwd02f`, `jwd04` and `jwd05e` mount points are no longer defined in `mountpoints.yml` (they are still listed in the `nfs_check_excluded_mounts` of [vars.yml](https://github.com/usegalaxy-eu/mounts/blob/master/vars.yml)). The `/data/0`, `/data/2`, `/data/dnb03`, `/data/gxtst`, `/data/gxkey` and `/data/galaxy-sync` mount points have been removed as well (`dnb03` was replaced by the `dnb-ds03` legacy mount, and the galaxy-sync shares now mount at `/opt/galaxy`).
 
 # S3 polices for our storage
 
@@ -238,5 +290,4 @@ When the data is copied, we need to update the `object_store_id` in the DB and t
 ```sql
 UPDATE dataset SET object_store_id = 'files1' WHERE object_store_id = 'files0';
 ```
-
 

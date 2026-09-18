@@ -28,7 +28,7 @@ Cloud Admin:
 - [Launching a student VM](./cloud/student-vm.md)
 - [Services in the bwCloud](./cloud/services.md)
 - [Celery](./galaxy-admin/celery.md)
-- [KVM Server for Critical Infrastructure](./infrastructure/kvm-server.md)
+- [KVM Server for Critical Infrastructure](./archived/kvm-server.md)
 
 
 This and That:
