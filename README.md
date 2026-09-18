@@ -5,7 +5,7 @@
 - [Custom Subdomain](./galaxy-admin/subdomains.md)
 - [Interactive Tools](./galaxy-admin/interactive_tools.md)
 - [Update a Tool](https://github.com/usegalaxy-eu/usegalaxy-eu-tools)
-- [Galaxy Europe Services](./cloud/services.md)
+- [Galaxy Europe Services](./kvm/services.md)
 - [Bare metal nodes](./infrastructure/bare_metal.md)
 - [Traefik](./galaxy-admin/traefik.md)
 - [Configuring multi-GPU HTCondor nodes](./htcondor/multi-gpu-single-node-htcondor.md)
@@ -21,14 +21,13 @@ Galaxy Admin:
 - [Mixed Notes](./galaxy-admin/notes.md)
 - [ClickHouse and Plausible Analytics](./plausible.md)
 
-Cloud Admin:
+KVM Infrastructure:
 
-- [VMs overview](./cloud/readme.md)
-- [Accessing bwCloud with Terraform](./cloud/access-bwCloud.md)
-- [Launching a student VM](./cloud/student-vm.md)
-- [Services in the bwCloud](./cloud/services.md)
+- [KVM Infrastructure (Terraform + libvirt)](./kvm/README.md)
+- [Galaxy Europe Services](./kvm/services.md)
 - [Celery](./galaxy-admin/celery.md)
-- [KVM Server for Critical Infrastructure](./archived/kvm-server.md)
+
+The former bwCloud documentation has been moved to [archived/cloud/](./archived/cloud/).
 
 
 This and That:
