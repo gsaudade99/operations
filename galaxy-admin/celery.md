@@ -29,7 +29,7 @@ If you can see galaxy connecting to your rabbit in the RabbitMQ dashboard, you k
 By the way, we dont need to specify the database for celery, because it should be already in the config file. (As URL, not as socket!)
 
 In order to protect our Rabbithole from unwanted visiors, we decided to put it behind a reverse proxy, called traefik.
-The address `mq.galaxyproject.eu` points to this proxy. To reach the RabbitMQ itself, try `mq02.galaxyproject.eu` or `mq.bi.privat`.
+The address `mq.bi.privat` points to this proxy. To reach the RabbitMQ itself, try `mq.bi.privat`.
 This is necessary for SSH or to view the dashboard.
 
 Sometimes the space gets very tight in the rabbit hole and you find files that are large, even up to multiple GB:
