@@ -145,33 +145,33 @@ The `autofs_mount_points` selection per host group (from the infrastructure-play
 * Export rules are
 
 ```bash
-fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi     
-vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser 
-------- ---------- --------- -------- --------------- ------ ------ --------- 
+fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi
+vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser
+------- ---------- --------- -------- --------------- ------ ------ ---------
 denbi   denbi      1         nfs3     132.230.223.238 sys    sys    any
-denbi   denbi      1         nfs3     132.230.223.239 sys    sys    any       
-denbi   denbi      3         nfs3     10.5.68.0/24    sys    sys    any       
+denbi   denbi      1         nfs3     132.230.223.239 sys    sys    any
+denbi   denbi      3         nfs3     10.5.68.0/24    sys    sys    any
 2 entries were displayed.
 
-fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi-svc 
-vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser 
-------- ---------- --------- -------- --------------- ------ ------ --------- 
-denbi   denbi-svc  1         nfs3     132.230.180.148 sys    sys    sys       
+fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi-svc
+vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser
+------- ---------- --------- -------- --------------- ------ ------ ---------
+denbi   denbi-svc  1         nfs3     132.230.180.148 sys    sys    sys
 
-fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi-ws  
-vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser 
-------- ---------- --------- -------- --------------- ------ ------ --------- 
+fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname denbi-ws
+vserver policyname ruleindex protocol clientmatch     rorule rwrule superuser
+------- ---------- --------- -------- --------------- ------ ------ ---------
 denbi   denbi-ws   1         nfs3     132.230.223.238 sys    sys    any
-denbi   denbi-ws   1         nfs3     132.230.223.239 sys    sys    any       
-denbi   denbi-ws   3         nfs3     10.5.68.0/24    sys    sys    any       
-denbi   denbi-ws   4         nfs3     132.230.223.213 sys    sys    none      
+denbi   denbi-ws   1         nfs3     132.230.223.239 sys    sys    any
+denbi   denbi-ws   3         nfs3     10.5.68.0/24    sys    sys    any
+denbi   denbi-ws   4         nfs3     132.230.223.213 sys    sys    none
 3 entries were displayed.
 
-fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname birna     
-vserver policyname ruleindex protocol clientmatch      rorule rwrule superuser 
-------- ---------- --------- -------- ---------------- ------ ------ --------- 
-denbi   birna      1         nfs3     132.230.153.0/28 sys    sys    any       
-denbi   birna      2         nfs3     10.5.68.0/24     sys    sys    none      
+fr1-cl2::> export-policy rule show -vserver denbi -fields protocol,clientmatch,rorule,rwrule,superuser -policyname birna
+vserver policyname ruleindex protocol clientmatch      rorule rwrule superuser
+------- ---------- --------- -------- ---------------- ------ ------ ---------
+denbi   birna      1         nfs3     132.230.153.0/28 sys    sys    any
+denbi   birna      2         nfs3     10.5.68.0/24     sys    sys    none
 2 entries were displayed.
 ```
 

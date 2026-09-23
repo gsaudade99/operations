@@ -1,6 +1,6 @@
 # Traefik
 
-[Traefik](https://doc.traefik.io/traefik/v3.0/) is used as a reverse proxy, certificate manager and loadbalancer for `sn06` and `sn07`.  
+[Traefik](https://doc.traefik.io/traefik/v3.0/) is used as a reverse proxy, certificate manager and loadbalancer for `sn09` and `sn07`.
 It is deployed using an [ansible-playbook](https://github.com/usegalaxy-eu/infrastructure-playbook/pull/1257) which uses [usegalaxy-eu's Traefik role](https://github.com/usegalaxy-eu/ansible-Traefik). This role internally initializes a swarm cluster on the target host, creates secrets, the specified network and docker swarm services.  
 Docker swarm was used for mainly two reasons:
 1. Secret handling: Secrets are not saved inside env files, but are encrypted on disk and only available to the container they are attached to.
@@ -38,13 +38,7 @@ If you did everything correctly, the new router appears on Traefik's [dashboard]
 
 ## How to debug
 ### 🚑 Galaxy not reachable
-- Go to [aws](https://signin.aws.amazon.com/) and sign in using the credentials in the vault (`aws.yml`)
-- Navigate to `route53`
-- click on `hosted zones`
-- then on `usegalaxy.eu`
-- change the `A Record` for `usegalaxy.eu` and point it to sn06's public IP address (`132.230.223.239`)
-- The record usually has a TTL of 7200s, which means, that after 2h all requests should get sn06's IP instead of Traefik's.
-- In order to bridge that time, you can install nginx on Traefik and `proxy_pass` all requests to one headnode directly.
+In order to bridge the debug time, you can install HAProxy on Traefik and try [this config](https://gist.github.com/meanevo/f962a8fa5763862ab6cd94addbc4dd8d)
 ### usegalaxy.eu /subdomain is showing a plain `404 not found`
 Most likely something happened to the router.
 - Check the [dashboard](https://traefik.springhare-dinosaur.ts.net/dashboard/#/) via tailscale

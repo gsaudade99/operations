@@ -4,15 +4,15 @@ https://github.com/galaxyproject/galaxy-hub/blob/master/content/bare/eu/usegalax
 
 # decode Galaxy id
 ```
-user@sn06:~$ . /opt/galaxy/venv/bin/activate
-(venv) user@sn06:~$ cd /opt/galaxy
-(venv) user@sn06:/opt/galaxy$ python server/scripts/secret_decoder_ring.py decode ec81bbe85ee13506
+user@sn09:~$ . /opt/galaxy/venv/bin/activate
+(venv) user@sn09:~$ cd /opt/galaxy
+(venv) user@sn09:/opt/galaxy$ python server/scripts/secret_decoder_ring.py decode ec81bbe85ee13506
 746380
 ```
 or using gxadmin
 ```
-user@sn06:~$ . /opt/galaxy/venv/bin/activate
-(venv) user@sn06:~$ GALAXY_ROOT=/opt/galaxy/server GALAXY_CONFIG_FILE=/opt/galaxy/config/galaxy.yml gxadmin galaxy decode ec81bbe85ee13506
+user@sn09:~$ . /opt/galaxy/venv/bin/activate
+(venv) user@sn09:~$ GALAXY_ROOT=/opt/galaxy/server GALAXY_CONFIG_FILE=/opt/galaxy/config/galaxy.yml gxadmin galaxy decode ec81bbe85ee13506
 746380
 ```
 
@@ -144,7 +144,7 @@ Get all processes in D state:
 Looking at file handlers of a thread yields to:
 
 ```
-root@sn06:~$ ll /proc/215503/task/296960/fd/** 
+root@sn09:~$ ll /proc/215503/task/296960/fd/**
 lr-x------ 1 galaxy galaxy 64 Aug  2 17:09 /proc/215503/task/296960/fd/0 -> /dev/null
 lrwx------ 1 galaxy galaxy 64 Aug  2 17:09 /proc/215503/task/296960/fd/1 -> 'socket:[3487300049]'
 lr-x------ 1 galaxy galaxy 64 Aug  2 17:09 /proc/215503/task/296960/fd/10 -> /data/jwd01/main/048/946/48946081

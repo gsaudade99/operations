@@ -14,7 +14,7 @@ They have  f.q.d.n. assigned by us and are collected [here](https://github.com/u
 
 `sn11.galaxyproject.eu` is the Galaxy PostgreSQL database server
 
-`sn12.galaxyproject.eu` is the Jenkins master machine, a KVM/libvirt host, and the DNBD3 proxy
+`sn12.galaxyproject.eu` is the Jenkins master machine and the HTCondor central manager. It is also a KVM/libvirt host and the DNBD3 proxy
 
 `zfs0f.galaxyproject.eu` is an all-flash ZFS server (formerly `ssds1.galaxyproject.eu`)
 
@@ -25,7 +25,5 @@ They have  f.q.d.n. assigned by us and are collected [here](https://github.com/u
 `zfs3f.galaxyproject.eu` is an all-flash ZFS server
 
 `dnbd3-primary.galaxyproject.eu` is the primary server of the DNBD3 network boot infrastructure for the bare metal VGCN nodes
-
-The HTCondor central manager runs as a VM (`central-manager.bi.privat`)
 
 `manager.vgcn.galaxyproject.eu` was the previous HTCondor central manager; its DNS record has been removed

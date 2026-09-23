@@ -2,7 +2,7 @@
 
 * The following are the roles that are currently being installed on the head and maintenance nodes via the [sn09 playbook](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/sn09.yml), and [maintenance node playbook](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/maintenance.yml)
 * The roles are classified as either head node only, maintenance node only, or both
-* Head nodes: are the nodes that are running the Galaxy web server, the Galaxy job handlers, and the Galaxy workflow schedulers. As of 18/09/2026 `sn09.galaxyproject.eu` is the head node. (`sn06` and `sn07` have been decommissioned.)
+* Head nodes: are the nodes that are running the Galaxy web server, the Galaxy job handlers, and the Galaxy workflow schedulers. As of 18/09/2026 `sn09.galaxyproject.eu` is the only head node and `sn10` will be added later. Only `sn09` is in production. (`sn06` and `sn07` have been decommissioned.)
 * Maintenance node: runs cron jobs, contains Galaxy codebase, config, etc, pushes data to influxdb, performs cleanup tasks, etc.
 * The `sn10` (UCSC Genome Browser VM host) and `sn11` (PostgreSQL database server) nodes have their own separate, much simpler playbooks ([sn10.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/sn10.yml) and [sn11.yml](https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/sn11.yml)) and are not covered in this table.
 

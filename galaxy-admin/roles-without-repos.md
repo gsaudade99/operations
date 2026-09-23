@@ -2,14 +2,14 @@
 ## that we carry around to fix or monitor things and that do not have an own repo/readme.md
 ### usegalaxy_eu.fs_maintenance
 #### cron job cleanup-scrips submit to HTCondor (this one has a repo but no description)
-This is scheduled as condor job, so I commented it for now, because we can also schedule this from sn06
+This is scheduled as condor job, so I commented it for now, because we can also schedule this from sn09
 and as soon as we have HTCondor on sn07 running we could uncomment it, because it will check the condor queue for running jobs before it reschedules them.
 The other two cron jobs are a `docker purge` and `gxadmin cleanup` we most likely dont need docker anymore (also commented out) and can run `gxadmin cleanup` only on one node, because it will lead to conflicts otherwise.
 ### usegalaxy-eu.monitoring
 #### NFS access time in cloud and nfsstat
 This role adds a script to the telegraf exec plugin, which executes several pssh commands to gather NFS access-time information from all worker nodes. It is basically a redundancy of usegalaxy-eu.montor-disk-access-time, which was merged to monitoring. The other part it does without pdsh is collecting the output from nfsstat commant and send it to influxDB
 **This role can and should be moved to monitoring worker completely**
-
+  
 ### usegalaxy-eu.rsync-to-nfs
 Since we don't want to sync sn07 to NFS we don't need that role variable
 ### hxr.monitor-email
