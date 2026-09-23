@@ -27,7 +27,7 @@ yum clean all
 # visit all compute nodes and execute one command
 
 ```console
-pdsh -g cloud 'singularity --version | colordiff'
+pssh -g cloud 'singularity --version | colordiff'
 ```
 
 # GPUs
@@ -134,10 +134,6 @@ All the details in this https://github.com/usegalaxy-eu/issues/issues/277
 
 * [PGTune](https://pgtune.leopard.in.ua) is a PG configurator assistent
 * configuration files are under /var/lib/pgsql/13/data/
-
-# How to install pdsh with genders support on Centos8
-
-https://gist.github.com/gmauro/cc97ff1287282469ce98c2b8035100f2
 
 # debug 'D' state in processe
 
